@@ -163,7 +163,7 @@ define(function() {
 			if(redeemFeeRiseData != "") {
 
 				if(redeemFeeRiseData != "") {
-					insert_t_fund_product_fee_sql = insert_t_fund_product_fee_sql + ";" + redeemFeeRiseData.sql;
+					insert_t_fund_product_fee_sql = insert_t_fund_product_fee_sql + ";" + redeemFeeRiseData.sql + ";";
 				} else {
 					insert_t_fund_product_fee_sql = insert_t_fund_product_fee_sql + redeemFeeRiseData.sql + ";";
 				}
@@ -227,7 +227,7 @@ define(function() {
 			}
 
 			return {
-				sql: valueArr.join(";")+";",
+				sql: valueArr.join(";"),
 				rowNo: rowNo
 			}
 
