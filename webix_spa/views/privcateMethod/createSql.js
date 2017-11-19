@@ -81,8 +81,8 @@ define(function() {
 			t_fund_product_ext_values.push("'" + formValues.code.trim() + "'");
 			t_fund_product_ext_values.push("'" + formValues.code.trim() + "'");
 			t_fund_product_ext_values.push("'" + formValues.discount_rate.trim() + "'");
-			t_fund_product_ext_values.push("'" + formValues.fund_manager_fee.trim() + "'");
-			t_fund_product_ext_values.push("'" + formValues.fund_custodian_fee.trim() + "'");
+			t_fund_product_ext_values.push("'" + this._percent2Num(formValues.fund_manager_fee.trim()) + "'");
+			t_fund_product_ext_values.push("'" + this._percent2Num(formValues.fund_custodian_fee.trim()) + "'");
 			t_fund_product_ext_values.push("'0'");
 			t_fund_product_ext_values.push("'0'");
 			t_fund_product_ext_values.push("'" + formValues.con_per_min.trim() + "'");
@@ -128,9 +128,9 @@ define(function() {
 			t_fund_product_summary_values.push("'" + formValues.fund_trustee.trim() + "'");
 			t_fund_product_summary_values.push("'" + formValues.fund_manager.trim() + "'");
 			t_fund_product_summary_values.push("'" + formValues.fund_custodian.trim() + "'");
-			t_fund_product_summary_values.push("'" + formValues.fund_custodian_fee.trim() + "'");
+			t_fund_product_summary_values.push("'" + this._percent2Num(formValues.fund_custodian_fee.trim()) + "'");
 			t_fund_product_summary_values.push("'" + formValues.first_per_min.trim() + "'");
-			t_fund_product_summary_values.push("'" + formValues.fund_manager_fee.trim() + "'");
+			t_fund_product_summary_values.push("'" + this._percent2Num(formValues.fund_manager_fee.trim()) + "'");
 			t_fund_product_summary_values.push("'" + formValues.performance_appraisal_standard.trim() + "'");
 			t_fund_product_summary_values.push("'" + formValues.investment_goals.trim() + "'");
 			t_fund_product_summary_values.push("'" + formValues.risk_yield.trim() + "'");
@@ -211,12 +211,12 @@ define(function() {
 				t_fund_product_fee_values.push("'" + formValues.code.trim() + "0000" + rowNo + "'");
 				t_fund_product_fee_values.push("'" + formValues.code.trim() + "'");
 				t_fund_product_fee_values.push("'" + type + "'");
-				t_fund_product_fee_values.push("'" + row.minimum == undefined ? 0 : "'" +row.minimum.trim() + "'");
-				t_fund_product_fee_values.push(row.maximum == undefined ? "NULL" : "'" + row.maximum.trim() + "'");
-				t_fund_product_fee_values.push(row.fee_rate == undefined ? "NULL" : "'" + row.fee_rate.trim() + "'");
+				t_fund_product_fee_values.push("'" + row.minimum == undefined ? 0 : "'" + this._Str2Num(row.minimum.trim()) + "'");
+				t_fund_product_fee_values.push(row.maximum == undefined ? "NULL" : "'" + this._Str2Num(row.maximum.trim()) + "'");
+				t_fund_product_fee_values.push(row.fee_rate == undefined ? "NULL" : "'" + this._percent2Num(row.fee_rate.trim()) + "'");
 				t_fund_product_fee_values.push(row.fixed_fee == undefined ? "NULL" : "'" + row.fixed_fee.trim() + "'");
-				t_fund_product_fee_values.push("'" + row.label_key.trim() + "'");
-				t_fund_product_fee_values.push("'" + row.label_value.trim() + "'");
+				t_fund_product_fee_values.push("'" + row.remark.trim().split(" ")[0] + "'");
+				t_fund_product_fee_values.push("'" + row.remark.trim().split(" ")[1] + "'");
 				t_fund_product_fee_values.push("NOW()");
 				t_fund_product_fee_values.push("NOW()");
 				t_fund_product_fee_values.push("'" + indexNo++ + "'");
@@ -227,9 +227,38 @@ define(function() {
 			}
 
 			return {
-				sql: valueArr.join(";"),
+				sql: valueArr.join(";")+";",
 				rowNo: rowNo
 			}
+
+		},
+
+		_percent2Num: function(num) {
+			if(/%/.test(num)) {
+				num = num.replace("%", "");
+				var arr = num.split(".");
+
+				if(arr[0].length == 1) {
+					return "0.0" + num.replace(".", "");
+				}
+
+				if(arr[0].length == 2) {
+					return "0." + num.replace(".", "");
+				}
+
+				if(arr[0].length > 2) {
+					return arr[0].substr(0, arr[0].length - 2) + "." + arr[0].substr(-2) + arr[1];
+				}
+			}
+			return num;
+
+		},
+		_Str2Num: function(num) {
+			if(/万/.test(num)) {
+				num = num.replace("万", "");
+				return num + "0000";
+			}
+			return num;
 
 		}
 

@@ -76,16 +76,10 @@ define(function(){
 						width: 80
 					},
 					{
-						id: "label_key",
-						header: "描述KEY",
+						id: "remark",
+						header: "描述",
 						editor: "text",
-						width: 100
-					},
-					{
-						id: "label_value",
-						header: "描述VALUE",
-						editor: "text",
-						width: 100
+						width: 200
 					}
 
 				]
